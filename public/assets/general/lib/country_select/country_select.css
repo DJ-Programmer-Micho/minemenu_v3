@@ -1,0 +1,23 @@
+.country{
+    direction: ltr;
+}
+
+.country * {
+
+    direction: ltr;
+}
+
+.country-select{
+
+    width: 100%;
+
+}
+
+.country  ul:lang(ar){
+    left:0
+  }
+  
+  
+  .country label{
+    display: block !important;
+  }
