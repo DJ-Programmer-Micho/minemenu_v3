@@ -1,0 +1,1 @@
+<x-dashboard.change_password/>

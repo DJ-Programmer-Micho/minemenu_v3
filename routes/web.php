@@ -45,6 +45,10 @@ Route::get('/rest/profile', function(){
     return view('dashboard.rest.pages.profile.index');
 })->name('profile')->middleware('rest');
 
+Route::get('/rest/profile/change_password', [AuthController::class,'changePassword'])->name('change-password');
+Route::post('/rest/profile/change_password', [AuthController::class,'updatePassword'])->name('update-password');
+
+
 // EMP ROUTE EMPLOYEE
 Route::get('/emp', function(){
     return view('dashboard.emp.layouts.layout');
