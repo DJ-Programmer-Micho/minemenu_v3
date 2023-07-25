@@ -99,6 +99,7 @@ class AuthController extends Controller
         // $user->subscribe(1);
         auth()->login($user);
         return redirect('/rest');
+        // return redirect('/send-sms');
     } // END Function (Register New)
 
     public function logout(){
@@ -133,4 +134,145 @@ class AuthController extends Controller
             'password' => Hash::make($newPassword)
         ]);
     } // END Function (Change Password Function)
+/*
+    public function send_code_view(){
+        return view('auth.sms.send_code');
+    }
+    public function send_code(){
+        if(session('sms-sent') && session('sms-sent') > now()){
+            return back()->with('denied','try again after 1 minute');
+        }else{
+            session()->put('sms-sent',now()->addMinutes(2));
+            self::sendSms();
+            return redirect('verify-sms');
+        }
+    }
+    public function verify_code_view(){
+        return view('auth.sms.verify_code');
+    }
+    public static function sendSms(){
+        $URL = "https://verification.api.sinch.com/verification/v1/verifications";
+        $METHOD = "POST";
+        //The key from one of your Verification Apps, found here https://dashboard.sinch.com/verification/apps
+
+        $applicationKey  = "d00712bb-fc2a-4cff-9ef5-9277ab96411a";
+
+        
+        //The secret from the Verification App that uses the key above, found here https://dashboard.sinch.com/verification/apps
+        
+        $applicationSecret = "YXZ5OjHGWUC0fvgUvF5mlA==";
+
+        
+        //The number that will receive the SMS PIN. Test accounts are limited to verified numbers.
+        //The number must be in E.164 Format, e.g. Netherlands 0639111222 -> +31639111222
+        
+        $toNumber = auth()->user()->profile->phone;
+
+        $smsVerificationPayload = [
+            "identity" => [
+                "type" => "number",
+                "endpoint" => $toNumber
+            ],
+            "method" => "sms"
+        ];
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+            CURLOPT_HTTPHEADER => [
+            "Content-Type: application/json",
+            "Authorization: Basic " . base64_encode($applicationKey . ":" . $applicationSecret)
+            ],
+            CURLOPT_POSTFIELDS => json_encode($smsVerificationPayload),
+            CURLOPT_URL => $URL,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => $METHOD,
+        ]);
+
+        $response = curl_exec($curl);
+        $error = curl_error($curl);
+        $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+        curl_close($curl);
+
+        if ($error) {
+            // echo "cURL Error #:" . $error . "\n";
+        } else {
+            // echo $response . "\n";
+            // echo $statusCode . "\n";
+        }
+    }
+
+    public static function verify(){
+
+         $METHOD = "PUT";
+
+        
+        //The key from one of your Verification Apps, found here https://dashboard.sinch.com/verification/apps
+        
+        $applicationKey  = "d00712bb-fc2a-4cff-9ef5-9277ab96411a";
+
+        
+        //The secret from the Verification App that uses the key above, found here https://dashboard.sinch.com/verification/apps
+        
+        $applicationSecret = "YXZ5OjHGWUC0fvgUvF5mlA==";
+
+        
+        //The number that will receive the SMS PIN. Test accounts are limited to verified numbers.
+        //The number must be in E.164 Format, e.g. Netherlands 0639111222 -> +31639111222
+        
+        $toNumber = auth()->user()->profile->phone;
+
+        
+        //The code which was sent to the number.
+        
+        $code = request('code');
+
+        $url = "https://verification.api.sinch.com/verification/v1/verifications/number/" . $toNumber;
+
+        $smsVerificationPayload = [
+            "method" => "sms",
+            "sms" => [
+                "code" => $code
+            ]
+        ];
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+            CURLOPT_HTTPHEADER => [
+            "Content-Type: application/json",
+            "Authorization: Basic " . base64_encode($applicationKey . ":" . $applicationSecret)
+            ],
+            CURLOPT_POSTFIELDS => json_encode($smsVerificationPayload),
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => $METHOD,
+        ]);
+
+        $response = curl_exec($curl);
+        $error = curl_error($curl);
+        $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+        curl_close($curl);
+
+        if ($error) {
+            echo "cURL Error #:" . $error . "\n";
+        } else {
+            // echo $response . "\n";
+            // echo $statusCode . "\n";
+            switch ($statusCode) {
+                case '200':
+                   User::find(auth()->user()->id)->update(['verified_at'=>now()]);
+                   return redirect('/admin');
+                    break;
+                
+                default:
+                    echo  $response;
+                    break;
+            }
+        }
+
+    }
+    */
 }

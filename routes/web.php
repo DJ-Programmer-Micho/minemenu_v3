@@ -25,7 +25,21 @@ Route::post('/login', [AuthController::class,'login'])->name('logging');
 Route::get('/register',[AuthController::class,'register'])->name('register');
 Route::post('/register',[AuthController::class,'signUp']);
 Route::get('/logout', [AuthController::class,'logout'])->name('logout');
+// routes/web.php
 
+/////// SMS 
+/*
+Route::controller(AuthController::class)->group(function(){
+    // Route::get('/change-phone','changePhone');
+    // Route::put('/change-phone','updatephone');
+
+    Route::get('/send-sms', 'send_code_view')->name('viewsmsto');
+    Route::post('/send-sms', 'send_code')->name('sendsmsto');
+
+    Route::get('/verify-sms', 'verify_code_view');
+    Route::post('/verify-sms','verify');
+});
+*/
 // MET ROUTE SUPER ADMIN
 Route::get('/own', function(){
     return view('dashboard.own.layouts.layout');
@@ -44,6 +58,10 @@ Route::get('/rest', function(){
 Route::get('/rest/profile', function(){
     return view('dashboard.rest.pages.profile.index');
 })->name('profile')->middleware('rest');
+
+Route::get('/rest/menu', function(){
+    return view('dashboard.rest.pages.menu.index');
+})->name('menu')->middleware('rest');
 
 Route::get('/rest/profile/change_password', [AuthController::class,'changePassword'])->name('change-password');
 Route::post('/rest/profile/change_password', [AuthController::class,'updatePassword'])->name('update-password');
